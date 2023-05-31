@@ -12,4 +12,3 @@ spec:
   - name: nginx-container
     image: nginx
     
-    

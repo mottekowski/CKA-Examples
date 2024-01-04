@@ -2,10 +2,6 @@
 	"folders": [
 		{
 			"path": "."
-		},
-		{
-			"name": "SSH FS - ubumaster01",
-			"uri": "ssh://ubumaster01/"
 		}
 	],
 	"settings": {

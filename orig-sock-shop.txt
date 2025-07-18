@@ -1,0 +1,61 @@
+# Analysis of orig-sock-shop YAML Files
+
+## 01-carts-dep.yaml
+- **Kind**: Deployment
+- **Name**: carts
+- **Namespace**: sock-shop
+- **Replicas**: 1
+- **Container Image**: weaveworksdemos/carts:0.4.8
+- **Ports**: 80
+- **Resources**: 
+  - Limits: CPU: 300m, Memory: 500Mi
+  - Requests: CPU: 100m, Memory: 200Mi
+- **Security Context**: 
+  - Run as non-root user (10001)
+  - Read-only root filesystem
+- **Volume**: Uses an emptyDir volume mounted at /tmp
+
+## 03-carts-db-dep.yaml
+- **Kind**: Deployment
+- **Name**: carts-db
+- **Namespace**: sock-shop
+- **Replicas**: 1
+- **Container Image**: mongo
+- **Ports**: 27017
+- **Security Context**: 
+  - Capabilities: CHOWN, SETGID, SETUID
+  - Read-only root filesystem
+- **Volume**: Uses an emptyDir volume mounted at /tmp
+
+## 05-catalogue-dep.yaml
+- **Kind**: Deployment
+- **Name**: catalogue
+- **Namespace**: sock-shop
+- **Replicas**: 1
+- **Container Image**: weaveworksdemos/catalogue:0.3.5
+- **Ports**: 80
+- **Resources**: 
+  - Limits: CPU: 200m, Memory: 200Mi
+  - Requests: CPU: 100m, Memory: 100Mi
+- **Liveness and Readiness Probes**: Health checks on /health endpoint
+
+## 07-catalogue-db-dep.yaml
+- **Kind**: Deployment
+- **Name**: catalogue-db
+- **Namespace**: sock-shop
+- **Replicas**: 1
+- **Container Image**: weaveworksdemos/catalogue-db:0.3.0
+- **Ports**: 3306
+- **Environment Variables**: MYSQL_ROOT_PASSWORD, MYSQL_DATABASE
+
+## 09-front-end-dep.yaml
+- **Kind**: Deployment
+- **Name**: front-end
+- **Namespace**: sock-shop
+- **Replicas**: 1
+- **Container Image**: weaveworksdemos/front-end:0.3.12
+- **Ports**: 8079
+- **Resources**: 
+  - Limits: CPU: 300m, Memory: 1000Mi
+  - Requests: CPU: 100m, Memory: 300Mi
+- **Liveness and Readiness Probes**: Health checks on / endpoint

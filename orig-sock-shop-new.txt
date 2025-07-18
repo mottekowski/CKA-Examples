@@ -1,0 +1,72 @@
+# Analysis of the Sock Shop Project
+
+## Overview
+The Sock Shop project is a microservices-based application deployed in a Kubernetes environment. It utilizes various services to manage different aspects of the application, including carts, catalogue, orders, payment, and session management.
+
+## Namespace
+- **Namespace**: sock-shop
+  - This namespace isolates all resources related to the Sock Shop application.
+
+## Services and Deployments
+
+### Carts Service
+- **Deployment**: carts
+  - **Image**: weaveworksdemos/carts:0.4.8
+  - **Ports**: 80
+  - **Resources**: Requests: 100m CPU, 200Mi memory; Limits: 300m CPU, 500Mi memory.
+  - **Security**: Runs as non-root user, with specific capabilities.
+
+### Carts Database Service
+- **Deployment**: carts-db
+  - **Image**: mongo
+  - **Ports**: 27017
+  - **Replicas**: 1
+
+### Catalogue Service
+- **Deployment**: catalogue
+  - **Image**: weaveworksdemos/catalogue:0.3.5
+  - **Ports**: 80
+  - **Resources**: Requests: 100m CPU, 100Mi memory; Limits: 200m CPU, 200Mi memory.
+  - **Liveness/Readiness Probes**: Configured to check health at /health.
+
+### Catalogue Database Service
+- **Deployment**: catalogue-db
+  - **Image**: weaveworksdemos/catalogue-db:0.3.0
+  - **Ports**: 3306
+
+### Front-End Service
+- **Deployment**: front-end
+  - **Image**: weaveworksdemos/front-end:0.3.12
+  - **Ports**: 8079
+  - **Environment**: SESSION_REDIS set to true.
+
+### Orders Service
+- **Deployment**: orders
+  - **Image**: weaveworksdemos/orders:0.4.7
+  - **Ports**: 80
+
+### Payment Service
+- **Deployment**: payment
+  - **Image**: weaveworksdemos/payment:0.4.3
+  - **Ports**: 80
+
+### Queue Master Service
+- **Deployment**: queue-master
+  - **Image**: weaveworksdemos/queue-master:0.3.1
+  - **Ports**: 80
+
+### RabbitMQ Service
+- **Deployment**: rabbitmq
+  - **Image**: rabbitmq:3.6.8-management
+  - **Ports**: 15672 (management), 5672 (RabbitMQ).
+
+### Session Database Service
+- **Deployment**: session-db
+  - **Image**: redis:alpine
+  - **Ports**: 6379
+
+## Monitoring
+- Several services include Prometheus annotations for monitoring, allowing for performance tracking and health checks.
+
+## Conclusion
+The Sock Shop project is a well-structured microservices application that leverages Kubernetes for deployment and management, ensuring scalability and maintainability.

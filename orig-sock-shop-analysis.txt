@@ -1,49 +1,96 @@
-# Analysis of the orig-sock-shop Kubernetes Deployments
+# Sock Shop Application Analysis
 
-## 1. Carts Service (01-carts-dep.yaml)
-- **Deployment Name**: carts
+## Namespace
 - **Namespace**: sock-shop
-- **Replicas**: 1
-- **Container Image**: weaveworksdemos/carts:0.4.8
-- **Ports**: 80
-- **Environment Variables**: JAVA_OPTS for Java configuration.
-- **Resource Limits**: CPU: 300m, Memory: 500Mi
-- **Security Context**: Non-root user, read-only root filesystem.
+  - This namespace is used to isolate the resources for the sock shop application.
 
-## 2. Carts Database (03-carts-db-dep.yaml)
-- **Deployment Name**: carts-db
-- **Namespace**: sock-shop
-- **Replicas**: 1
-- **Container Image**: mongo
-- **Ports**: 27017
-- **Environment Variables**: MYSQL_ROOT_PASSWORD and MYSQL_DATABASE.
-- **Security Context**: Limited capabilities, read-only root filesystem.
+## Deployments
+1. **Carts Deployment**
+   - **Name**: carts
+   - **Image**: weaveworksdemos/carts:0.4.8
+   - **Resources**: CPU and memory limits set.
+   - **Security Context**: Runs as a non-root user.
+   - **Volume**: Uses an empty directory volume.
 
-## 3. Catalogue Service (05-catalogue-dep.yaml)
-- **Deployment Name**: catalogue
-- **Namespace**: sock-shop
-- **Replicas**: 1
-- **Container Image**: weaveworksdemos/catalogue:0.3.5
-- **Ports**: 80
-- **Environment Variables**: Command and arguments for the application.
-- **Resource Limits**: CPU: 200m, Memory: 200Mi
-- **Liveness and Readiness Probes**: Health checks on /health endpoint.
+2. **Carts DB Deployment**
+   - **Name**: carts-db
+   - **Image**: mongo
+   - **Ports**: Exposes port 27017.
+   - **Security Context**: Specific capabilities added.
 
-## 4. Catalogue Database (07-catalogue-db-dep.yaml)
-- **Deployment Name**: catalogue-db
-- **Namespace**: sock-shop
-- **Replicas**: 1
-- **Container Image**: weaveworksdemos/catalogue-db:0.3.0
-- **Ports**: 3306
-- **Environment Variables**: MYSQL_ROOT_PASSWORD and MYSQL_DATABASE.
+3. **Catalogue Deployment**
+   - **Name**: catalogue
+   - **Image**: weaveworksdemos/catalogue:0.3.5
+   - **Liveness and Readiness Probes**: Configured for health checks.
 
-## 5. Front-End Service (09-front-end-dep.yaml)
-- **Deployment Name**: front-end
-- **Namespace**: sock-shop
-- **Replicas**: 1
-- **Container Image**: weaveworksdemos/front-end:0.3.12
-- **Ports**: 8079
-- **Environment Variables**: SESSION_REDIS.
-- **Liveness and Readiness Probes**: Health checks on / endpoint.
+4. **Catalogue DB Deployment**
+   - **Name**: catalogue-db
+   - **Image**: weaveworksdemos/catalogue-db:0.3.0
+   - **Ports**: Exposes port 3306.
 
-This analysis provides an overview of the services and their configurations within the sock shop application.
+5. **Front End Deployment**
+   - **Name**: front-end
+   - **Image**: weaveworksdemos/front-end:0.3.12
+   - **Ports**: Exposes port 8079.
+   - **Environment Variables**: Configured for session management.
+
+6. **Orders Deployment**
+   - **Name**: orders
+   - **Image**: weaveworksdemos/orders:0.4.7
+   - **Resources**: CPU and memory limits set.
+
+7. **Orders DB Deployment**
+   - **Name**: orders-db
+   - **Image**: mongo
+   - **Ports**: Exposes port 27017.
+
+8. **Payment Deployment**
+   - **Name**: payment
+   - **Image**: weaveworksdemos/payment:0.4.3
+   - **Liveness and Readiness Probes**: Configured for health checks.
+
+9. **Queue Master Deployment**
+   - **Name**: queue-master
+   - **Image**: weaveworksdemos/queue-master:0.3.1
+   - **Ports**: Exposes management and RabbitMQ ports.
+
+10. **Session DB Deployment**
+    - **Name**: session-db
+    - **Image**: redis:alpine
+    - **Ports**: Exposes port 6379.
+
+## Services
+1. **Carts DB Service**
+   - **Name**: carts-db
+   - **Ports**: Exposes port 27017.
+
+2. **Catalogue Service**
+   - **Name**: catalogue
+   - **Ports**: Exposes port 80.
+
+3. **Catalogue DB Service**
+   - **Name**: catalogue-db
+   - **Ports**: Exposes port 3306.
+
+4. **Front End Service**
+   - **Name**: front-end
+   - **Type**: NodePort, exposes port 80.
+
+5. **Orders Service**
+   - **Name**: orders
+   - **Ports**: Exposes port 80.
+
+6. **Orders DB Service**
+   - **Name**: orders-db
+   - **Ports**: Exposes port 27017.
+
+7. **RabbitMQ Service**
+   - **Name**: rabbitmq
+   - **Ports**: Exposes RabbitMQ and exporter ports.
+
+8. **Session DB Service**
+   - **Name**: session-db
+   - **Ports**: Exposes port 6379.
+
+## Summary
+The sock shop application is composed of multiple microservices, each defined by a Deployment and corresponding Service. The application utilizes various databases and messaging systems to manage state and communication between services.
